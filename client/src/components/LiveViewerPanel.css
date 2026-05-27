@@ -1,0 +1,289 @@
+.live-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.auctioneer-credits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem 4rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.credit-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 200px;
+}
+
+.credit-line strong {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  line-height: 1.2;
+}
+
+.credit-line span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.35rem;
+}
+
+.os-plane {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: #7dd3fc;
+  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+.viewer-hero {
+  text-align: center;
+}
+
+.hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--danger);
+  margin-bottom: 1rem;
+}
+
+.viewer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .viewer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.viewer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.viewer-card h3,
+.viewer-squads h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.sales-timeline {
+  list-style: none;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+  margin-right: -0.15rem;
+}
+
+.sale-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid var(--tc, var(--accent));
+  padding-left: 0.75rem;
+  animation: slide-up 0.3s ease-out;
+}
+
+.sale-name {
+  font-weight: 600;
+}
+
+.sale-team {
+  font-size: 0.8rem;
+  color: var(--tc, var(--text-muted));
+  font-weight: 600;
+}
+
+.sale-price {
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+
+.empty-sale,
+.squad-empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+.squad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.squad-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  border-top: 3px solid var(--tc);
+}
+
+.squad-header {
+  padding: 0.75rem 1rem;
+  background: var(--bg-elevated);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.squad-header strong {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--tc);
+  line-height: 1;
+}
+
+.squad-header-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem 0.65rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.squad-header-stats > span:not(.squad-os-stat) {
+  white-space: nowrap;
+}
+
+.squad-os-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(125, 211, 252, 0.1);
+  border: 1px solid rgba(125, 211, 252, 0.25);
+  color: #7dd3fc;
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.squad-os-stat .os-plane {
+  font-size: 0.75rem;
+}
+
+.squad-budget {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 215, 0, 0.05);
+  border-bottom: 1px solid var(--border);
+}
+
+.squad-budget span {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.squad-budget strong {
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: 1.2rem;
+}
+
+.squad-list {
+  list-style: none;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.squad-list li.squad-row {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+  gap: 0.5rem 0.65rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem 0.5rem 0.65rem;
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.os-plane-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+.os-plane-cell.is-os {
+  border-radius: 6px;
+  background: rgba(125, 211, 252, 0.08);
+}
+
+.squad-player-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.squad-player {
+  font-weight: 500;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.squad-role {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.squad-price {
+  color: var(--gold);
+  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-align: right;
+  align-self: center;
+}

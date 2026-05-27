@@ -1,0 +1,138 @@
+:root {
+  --bg: #0a0e17;
+  --bg-card: #121a2b;
+  --bg-elevated: #1a2438;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #f0f4fc;
+  --text-muted: #8b9cb8;
+  --accent: #ff6b35;
+  --accent-glow: rgba(255, 107, 53, 0.4);
+  --gold: #ffd700;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Outfit', system-ui, sans-serif;
+  --scrollbar-track: #0f1524;
+  --scrollbar-thumb: #2a3a5c;
+  --scrollbar-thumb-hover: #3d5280;
+  --scrollbar-size: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 107, 53, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(0, 120, 188, 0.1), transparent);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* IPL-themed scrollbars (WebKit + Firefox) */
+html,
+.ipl-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+html::-webkit-scrollbar,
+.ipl-scroll::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+html::-webkit-scrollbar-track,
+.ipl-scroll::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb,
+.ipl-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--scrollbar-thumb-hover), var(--scrollbar-thumb));
+  border-radius: 999px;
+  border: 2px solid var(--scrollbar-track);
+  min-height: 40px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+.ipl-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--gold), var(--accent));
+  border-color: var(--scrollbar-track);
+}
+
+html::-webkit-scrollbar-corner,
+.ipl-scroll::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+input,
+select {
+  font-family: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+  50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px rgba(255, 215, 0, 0.2); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-in {
+  animation: slide-up 0.35s ease-out;
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--danger);
+  border-radius: 50%;
+  animation: live-pulse 1.2s ease-in-out infinite;
+}
