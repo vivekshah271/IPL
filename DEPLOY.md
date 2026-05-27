@@ -32,7 +32,7 @@ Or use **New → Web Service** manually:
 
 | Setting | Value |
 |--------|--------|
-| Build Command | `npm install && npm install --prefix client && npm run build` |
+| Build Command | `npm install && npm install --prefix client --include=dev && npm run build` |
 | Start Command | `npm start` |
 | Health Check Path | `/api/state` |
 | Environment | `DATABASE_URL` = Internal Database URL from your Postgres instance |

@@ -41,7 +41,7 @@ Serves the built client from the Express server (default port 3001, or `PORT` en
 2. Go to [render.com](https://render.com) → **New** → **Blueprint** (or **Web Service**).
 3. Connect the repo. If using Blueprint, Render reads `render.yaml` automatically.
 4. Manual Web Service settings (if not using Blueprint):
-   - **Build command:** `npm install && npm install --prefix client && npm run build`
+   - **Build command:** `npm install && npm install --prefix client --include=dev && npm run build`
    - **Start command:** `npm start`
    - **Health check path:** `/api/state`
 5. Deploy. Share your `https://….onrender.com` URL.
