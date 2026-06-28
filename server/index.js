@@ -28,6 +28,21 @@ function respondAction(res, result) {
   return res.json(state.getPublicState());
 }
 
+function respondTradeAction(res, result) {
+  if (result?.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  state.broadcastAll(io);
+  return res.json(state.getPublicState());
+}
+
+async function respondTradeJoin(res, result) {
+  if (result?.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  return res.json(result);
+}
+
 app.get('/api/state', (_, res) => {
   res.json(state.getPublicState());
 });
@@ -93,8 +108,106 @@ app.post('/api/auction/edit-sale', (req, res) => {
   respondAction(res, state.editSale(playerId, teamId, finalPrice));
 });
 
+app.post('/api/trade/join', async (req, res) => {
+  const { roomCode, role, teamId, adminPassword } = req.body || {};
+  const result = await state.joinTradeRoom(roomCode, role, teamId, adminPassword);
+  await respondTradeJoin(res, result);
+});
+
+app.post('/api/trade/propose', async (req, res) => {
+  const { proposerTeamId, receiverTeamId, offeredPlayerId, requestedPlayerId } = req.body || {};
+  const result = await state.proposeTrade(
+    proposerTeamId,
+    receiverTeamId,
+    offeredPlayerId,
+    requestedPlayerId
+  );
+  respondTradeAction(res, result);
+});
+
+app.post('/api/trade/accept', async (req, res) => {
+  const { tradeId, adminPassword } = req.body || {};
+  if (adminPassword !== (process.env.TRADE_ADMIN_PASSWORD || 'vivekandprem123')) {
+    return res.status(403).json({ error: 'Invalid admin credentials' });
+  }
+  const result = await state.acceptTrade(tradeId, 'admin');
+  respondTradeAction(res, result);
+});
+
+app.post('/api/trade/reject', async (req, res) => {
+  const { tradeId, adminPassword } = req.body || {};
+  if (adminPassword !== (process.env.TRADE_ADMIN_PASSWORD || 'vivekandprem123')) {
+    return res.status(403).json({ error: 'Invalid admin credentials' });
+  }
+  const result = await state.rejectTrade(tradeId, 'admin');
+  respondTradeAction(res, result);
+});
+
+function respondRtm(res, result) {
+  if (result?.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  return res.json(result);
+}
+
+app.get('/api/rtm/team/:teamId', async (req, res) => {
+  const result = await state.getTeamRtm(req.params.teamId);
+  respondRtm(res, result);
+});
+
+app.post('/api/rtm/admin', async (req, res) => {
+  const { adminPassword } = req.body || {};
+  if (adminPassword !== (process.env.TRADE_ADMIN_PASSWORD || 'vivekandprem123')) {
+    return res.status(403).json({ error: 'Invalid admin credentials' });
+  }
+  const result = await state.getAdminRtm();
+  respondRtm(res, result);
+});
+
+app.post('/api/rtm/add', async (req, res) => {
+  const { teamId, playerId } = req.body || {};
+  const result = await state.addRtmPlayer(teamId, playerId);
+  respondRtm(res, result);
+});
+
+app.post('/api/rtm/remove', async (req, res) => {
+  const { teamId, playerId } = req.body || {};
+  const result = await state.removeRtmPlayer(teamId, playerId);
+  respondRtm(res, result);
+});
+
+app.post('/api/rtm/submit', async (req, res) => {
+  const { teamId } = req.body || {};
+  const result = await state.submitRtmList(teamId);
+  respondRtm(res, result);
+});
+
+app.post('/api/rtm/accept', async (req, res) => {
+  const { teamId, adminPassword } = req.body || {};
+  if (adminPassword !== (process.env.TRADE_ADMIN_PASSWORD || 'vivekandprem123')) {
+    return res.status(403).json({ error: 'Invalid admin credentials' });
+  }
+  const result = await state.acceptRtmList(teamId);
+  respondRtm(res, result);
+});
+
+app.post('/api/rtm/reject', async (req, res) => {
+  const { teamId, adminPassword } = req.body || {};
+  if (adminPassword !== (process.env.TRADE_ADMIN_PASSWORD || 'vivekandprem123')) {
+    return res.status(403).json({ error: 'Invalid admin credentials' });
+  }
+  const result = await state.rejectRtmList(teamId);
+  respondRtm(res, result);
+});
+
+app.get('/api/rtm/approved', async (_, res) => {
+  const result = await state.getApprovedRtm();
+  respondRtm(res, result);
+});
+
 io.on('connection', (socket) => {
   socket.emit('state:update', state.getPublicState());
+  socket.emit('trades:update', state.getPublicState().trades || []);
 
   socket.on('auction:start', ({ playerId }) => {
     const result = state.startAuction(playerId);

@@ -1,0 +1,246 @@
+.trade-window {
+  padding: 0 0 2rem;
+}
+
+.trade-window-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.trade-window-header h2 {
+  margin: 0;
+  color: #f8fafc;
+}
+
+.trade-window-header p {
+  margin: 0.35rem 0 0;
+  color: #94a3b8;
+}
+
+.trade-leave-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  background: transparent;
+  color: #fca5a5;
+  cursor: pointer;
+}
+
+.trade-error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: #fecaca;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.trade-panels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 1100px) {
+  .trade-panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+.trade-panel {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  min-height: 320px;
+}
+
+.trade-panel h3 {
+  margin: 0 0 0.85rem;
+  font-size: 1rem;
+  color: #e2e8f0;
+}
+
+.trade-player-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(30, 41, 59, 0.6);
+  color: #f1f5f9;
+  cursor: pointer;
+}
+
+.trade-player-row.selected {
+  border-color: #38bdf8;
+  background: rgba(14, 165, 233, 0.15);
+}
+
+.trade-player-row:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trade-player-name {
+  font-weight: 600;
+}
+
+.trade-player-meta {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 0.15rem;
+}
+
+.trade-select-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.trade-select-label select,
+.trade-admin-pass input {
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #0f172a;
+  color: #f1f5f9;
+}
+
+.trade-admin-pass {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.trade-propose-btn {
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trade-propose-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trade-empty,
+.trade-hint {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.trade-requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.trade-request {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(30, 41, 59, 0.5);
+  font-size: 0.9rem;
+  color: #e2e8f0;
+}
+
+.trade-request p {
+  margin: 0.35rem 0;
+}
+
+.trade-request-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.trade-status-badge {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.trade-status-badge.pending {
+  background: rgba(234, 179, 8, 0.2);
+  color: #fde047;
+}
+
+.trade-status-badge.accepted {
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+.trade-status-badge.rejected {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.trade-request-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.trade-accept-btn,
+.trade-reject-btn {
+  flex: 1;
+  padding: 0.45rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trade-accept-btn {
+  background: #16a34a;
+  color: #fff;
+}
+
+.trade-reject-btn {
+  background: #dc2626;
+  color: #fff;
+}
+
+.trade-teams-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trade-team-chip {
+  border: 2px solid;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}

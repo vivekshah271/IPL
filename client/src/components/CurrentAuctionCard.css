@@ -205,3 +205,17 @@
   background: rgba(139, 156, 184, 0.2);
   color: var(--text-muted);
 }
+
+.rtm-alert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(168, 85, 247, 0.18);
+  color: #e9d5ff;
+  border: 1px solid rgba(192, 132, 252, 0.45);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}

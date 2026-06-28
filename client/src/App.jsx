@@ -2,21 +2,37 @@ import { useState } from 'react';
 import { useAuctionSocket } from './hooks/useAuctionSocket';
 import AuctioneerPanel from './components/AuctioneerPanel';
 import LiveViewerPanel from './components/LiveViewerPanel';
+import TradeWindowPanel from './components/TradeWindowPanel';
 import AuctioneerLogin, { isAuctioneerAuthenticated } from './components/AuctioneerLogin';
+import TradeRoomLogin, { getTradeSession } from './components/TradeRoomLogin';
 import './App.css';
 
 function getInitialTab() {
   const params = new URLSearchParams(window.location.search);
-  return params.get('tab') === 'auctioneer' ? 'auctioneer' : 'viewer';
+  const tab = params.get('tab');
+  if (tab === 'auctioneer') return 'auctioneer';
+  if (tab === 'trade') return 'trade';
+  return 'viewer';
 }
 
 export default function App() {
   const [tab, setTab] = useState(getInitialTab);
   const [auctioneerAuthed, setAuctioneerAuthed] = useState(isAuctioneerAuthenticated);
+  const [tradeSession, setTradeSession] = useState(getTradeSession);
+  const [adminPassword, setAdminPassword] = useState('');
   const socket = useAuctionSocket();
 
   const openAuctioneer = () => {
     setTab('auctioneer');
+  };
+
+  const handleTradeJoin = (session) => {
+    setTradeSession(session);
+  };
+
+  const handleLeaveTradeRoom = () => {
+    setTradeSession(null);
+    setAdminPassword('');
   };
 
   return (
@@ -41,6 +57,13 @@ export default function App() {
           >
             Live Viewer
           </button>
+          <button
+            type="button"
+            className={`tab-btn ${tab === 'trade' ? 'active' : ''}`}
+            onClick={() => setTab('trade')}
+          >
+            Trade Window
+          </button>
         </nav>
         <div className={`connection ${socket.connected ? 'on' : 'off'}`}>
           <span className="live-dot" />
@@ -60,6 +83,29 @@ export default function App() {
             <AuctioneerPanel {...socket} />
           ) : (
             <AuctioneerLogin onSuccess={() => setAuctioneerAuthed(true)} />
+          )
+        ) : tab === 'trade' ? (
+          tradeSession ? (
+            <TradeWindowPanel
+              auctionState={socket.auctionState}
+              session={tradeSession}
+              onLeaveRoom={handleLeaveTradeRoom}
+              onProposeTrade={socket.proposeTrade}
+              onAcceptTrade={socket.acceptTrade}
+              onRejectTrade={socket.rejectTrade}
+              busy={socket.busy}
+              adminPassword={adminPassword}
+              setAdminPassword={setAdminPassword}
+              fetchTeamRtm={socket.fetchTeamRtm}
+              fetchAdminRtm={socket.fetchAdminRtm}
+              addRtmPlayer={socket.addRtmPlayer}
+              removeRtmPlayer={socket.removeRtmPlayer}
+              submitRtmList={socket.submitRtmList}
+              acceptRtmList={socket.acceptRtmList}
+              rejectRtmList={socket.rejectRtmList}
+            />
+          ) : (
+            <TradeRoomLogin onSuccess={handleTradeJoin} />
           )
         ) : (
           <LiveViewerPanel auctionState={socket.auctionState} />

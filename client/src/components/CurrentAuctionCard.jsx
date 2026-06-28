@@ -9,7 +9,7 @@ import {
 import { getIncrementLabel } from '../bidUtils';
 import './CurrentAuctionCard.css';
 
-export default function CurrentAuctionCard({ current, large = false }) {
+export default function CurrentAuctionCard({ current, large = false, showRtmAlert = false }) {
   if (!current) {
     return (
       <div className={`current-auction ${large ? 'large' : ''} empty`}>
@@ -31,6 +31,11 @@ export default function CurrentAuctionCard({ current, large = false }) {
       {status === 'live' && (
         <div className="live-badge">
           <span className="live-dot" /> LIVE
+        </div>
+      )}
+      {showRtmAlert && current.rtmAlert && (
+        <div className="rtm-alert-badge" title="Right to Match reminder">
+          🏷️ RTM Player – {current.rtmAlert.teamName}
         </div>
       )}
       <h2 className="player-name">{current.name}</h2>

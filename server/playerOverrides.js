@@ -9,7 +9,9 @@ const PLAYER_COUNTRY_OVERRIDES = {
   'Pat Cummins': 'Australia',
   'Travis Head': 'Australia',
   'Rashid Khan': 'Afghanistan',
-  'Nicholas Pooran': 'West Indies'
+  'Nicholas Pooran': 'West Indies',
+  'Ben Stokes': 'England',
+  'Jofra Archer': 'England'
 };
 
 function applyCountryOverrides(players) {

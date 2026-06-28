@@ -1,0 +1,76 @@
+.approved-rtm-section {
+  margin-bottom: 1.5rem;
+}
+
+.approved-rtm-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.approved-rtm-toggle {
+  align-self: flex-start;
+}
+
+.approved-rtm-empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0;
+}
+
+.approved-rtm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.approved-rtm-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.approved-rtm-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.approved-rtm-card header strong {
+  color: var(--text);
+}
+
+.approved-rtm-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.approved-rtm-meta {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.approved-rtm-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.88rem;
+}
+
+.approved-rtm-card li {
+  padding: 0.2rem 0;
+  color: var(--text);
+}
+
+.approved-rtm-card li span {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}

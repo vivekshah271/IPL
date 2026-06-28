@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 
 import CurrentAuctionCard from './CurrentAuctionCard';
 
+import ApprovedRtmPanel from './ApprovedRtmPanel';
+
 import BidControlPanel from './BidControlPanel';
 
 import TeamBudgetTable from './TeamBudgetTable';
@@ -61,7 +63,9 @@ export default function AuctioneerPanel({
 
   clearAllSales,
 
-  editSale
+  editSale,
+
+  fetchApprovedRtm
 
 }) {
 
@@ -177,7 +181,7 @@ export default function AuctioneerPanel({
 
         <h3>Current Auction</h3>
 
-        <CurrentAuctionCard current={current} />
+        <CurrentAuctionCard current={current} showRtmAlert />
 
         {current?.soldStatus === 'live' && livePlayer && (
 
@@ -212,6 +216,10 @@ export default function AuctioneerPanel({
         )}
 
       </section>
+
+
+
+      <ApprovedRtmPanel fetchApprovedRtm={fetchApprovedRtm} />
 
 
 

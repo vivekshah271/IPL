@@ -5,9 +5,11 @@ const db = require('./db');
 const { getNextBidUp, getNextBidDown, roundCr } = require('./bidUtils');
 const { isPlayerOverseas } = require('./playerUtils');
 const { applyCountryOverrides } = require('./playerOverrides');
+const rtm = require('./rtm');
 
 let state = null;
 let persistQueue = Promise.resolve();
+const TRADE_ADMIN_PASSWORD = process.env.TRADE_ADMIN_PASSWORD || 'vivekandprem123';
 
 function freshTeam(t) {
   const maxOs = t.maxOverseas ?? 8;
@@ -112,7 +114,9 @@ function createInitialState() {
         soldTeam: p.soldTeam,
         finalPrice: p.finalPrice
       }))
-      .reverse()
+      .reverse(),
+    trades: [],
+    roomId: db.getDefaultRoomId()
   };
   built.teams = built.teams.map((t) => enrichTeam(t, players));
   return built;
@@ -127,9 +131,13 @@ function getSnapshot() {
 }
 
 function schedulePersist() {
-  if (!db.isEnabled() || !state) return;
+  if (!state) return;
   persistQueue = persistQueue
-    .then(() => db.saveState(getSnapshot()))
+    .then(async () => {
+      if (db.isEnabled()) {
+        await db.saveState(getSnapshot(), state.roomId);
+      }
+    })
     .catch((err) => console.error('Failed to persist auction state:', err.message));
 }
 
@@ -145,29 +153,44 @@ function applySavedState(saved) {
     }),
     teams: fresh.teams,
     currentAuction: saved.currentAuction ?? null,
-    recentSales: Array.isArray(saved.recentSales) ? saved.recentSales : []
+    recentSales: Array.isArray(saved.recentSales) ? saved.recentSales : [],
+    trades: [],
+    roomId: db.getDefaultRoomId()
   };
 
   state.players = applyCountryOverrides(state.players);
   rebuildTeamsFromPlayers();
 }
 
+async function loadTradesIntoState() {
+  if (!state) return;
+  state.trades = db.isEnabled()
+    ? await db.loadTrades(state.roomId)
+    : state.trades || [];
+}
+
 async function initState() {
   await db.init();
-  const saved = await db.loadState();
+  const roomId = db.getDefaultRoomId();
+  const saved = await db.loadState(roomId);
 
   if (saved?.players?.length) {
     applySavedState(saved);
     console.log('Restored auction state from Postgres');
   } else {
     state = createInitialState();
+    state.roomId = roomId;
+    state.trades = [];
     state.players = applyCountryOverrides(state.players);
     rebuildTeamsFromPlayers();
     if (db.isEnabled()) {
-      await db.saveState(getSnapshot());
+      await db.saveState(getSnapshot(), roomId);
       console.log('Initialized auction state in Postgres');
     }
   }
+
+  await loadTradesIntoState();
+  await rtm.loadEntries(roomId);
 }
 
 function getState() {
@@ -178,13 +201,38 @@ function broadcast(io) {
   io.emit('state:update', getPublicState());
 }
 
+function enrichTrade(trade) {
+  const offered = state.players.find((p) => p.id === trade.offeredPlayerId);
+  const requested = state.players.find((p) => p.id === trade.requestedPlayerId);
+  return {
+    ...trade,
+    offeredPlayerName: offered?.name || trade.offeredPlayerId,
+    offeredPlayerRole: offered?.role || '',
+    offeredPlayerPrice: offered?.finalPrice ?? offered?.basePrice ?? null,
+    requestedPlayerName: requested?.name || trade.requestedPlayerId,
+    requestedPlayerRole: requested?.role || '',
+    requestedPlayerPrice: requested?.finalPrice ?? requested?.basePrice ?? null
+  };
+}
+
 function getPublicState() {
   return {
     players: state.players,
     teams: state.teams.map((t) => enrichTeam(t, state.players)),
     currentAuction: state.currentAuction,
-    recentSales: state.recentSales
+    recentSales: state.recentSales,
+    trades: (state.trades || []).map(enrichTrade),
+    roomCode: db.getDefaultRoomCode()
   };
+}
+
+function broadcastTrades(io) {
+  io.emit('trades:update', (state.trades || []).map(enrichTrade));
+}
+
+function broadcastAll(io) {
+  broadcast(io);
+  broadcastTrades(io);
 }
 
 function rebuildTeamsFromPlayers() {
@@ -264,7 +312,8 @@ function startAuction(playerId) {
     basePrice: player.basePrice,
     currentBid: player.currentBid,
     biddingTeam: null,
-    soldStatus: 'live'
+    soldStatus: 'live',
+    rtmAlert: rtm.findAcceptedForPlayer(player.id)
   };
   schedulePersist();
   return { ok: true };
@@ -534,9 +583,207 @@ function editSale(playerId, teamId, finalPrice) {
 
 function resetAuction() {
   state = createInitialState();
+  state.roomId = db.getDefaultRoomId();
+  state.trades = [];
   state.players = applyCountryOverrides(state.players);
   rebuildTeamsFromPlayers();
+  if (db.isEnabled()) {
+    db.clearTrades(state.roomId).catch((err) =>
+      console.error('Failed to clear trades:', err.message)
+    );
+    rtm.clearAll(state.roomId).catch((err) =>
+      console.error('Failed to clear RTM lists:', err.message)
+    );
+  } else {
+    rtm.clearAll(state.roomId).catch(() => {});
+  }
   schedulePersist();
+}
+
+function playerOwnedByTeam(playerId, teamId) {
+  const player = state.players.find((p) => p.id === playerId);
+  if (!player || player.soldStatus !== 'sold') return null;
+  if (player.soldTeam !== teamId) return null;
+  return player;
+}
+
+function executeTradeSwap(offeredPlayerId, requestedPlayerId, teamA, teamB) {
+  const playerA = state.players.find((p) => p.id === offeredPlayerId);
+  const playerB = state.players.find((p) => p.id === requestedPlayerId);
+  if (!playerA || !playerB) return { error: 'Player not found' };
+
+  // Roster slot prices on each team before the swap (budget stays with the slot)
+  const slotPriceOnTeamA = roundCr(playerA.finalPrice ?? playerA.basePrice ?? 0);
+  const slotPriceOnTeamB = roundCr(playerB.finalPrice ?? playerB.basePrice ?? 0);
+
+  playerA.soldTeam = teamB;
+  playerA.finalPrice = slotPriceOnTeamB;
+  playerA.currentBid = slotPriceOnTeamB;
+  playerA.biddingTeam = teamB;
+
+  playerB.soldTeam = teamA;
+  playerB.finalPrice = slotPriceOnTeamA;
+  playerB.currentBid = slotPriceOnTeamA;
+  playerB.biddingTeam = teamA;
+
+  rebuildTeamsFromPlayers();
+  schedulePersist();
+  return { ok: true };
+}
+
+async function joinTradeRoom(roomCode, role, teamId, adminPassword) {
+  const room = await db.validateRoomCode(roomCode);
+  if (!room) return { error: 'Invalid room code' };
+
+  const normalizedRole = String(role || '').toLowerCase();
+  if (!['team', 'admin'].includes(normalizedRole)) {
+    return { error: 'Invalid role' };
+  }
+
+  if (normalizedRole === 'team') {
+    if (!teamId || !TEAMS.find((t) => t.id === teamId)) {
+      return { error: 'Select a valid team' };
+    }
+  }
+
+  if (normalizedRole === 'admin') {
+    if (adminPassword !== TRADE_ADMIN_PASSWORD) {
+      return { error: 'Invalid admin credentials' };
+    }
+  }
+
+  return {
+    ok: true,
+    room: { id: room.id, code: room.code, name: room.name },
+    role: normalizedRole,
+    teamId: normalizedRole === 'team' ? teamId : null,
+    auctionState: getPublicState()
+  };
+}
+
+async function proposeTrade(proposerTeamId, receiverTeamId, offeredPlayerId, requestedPlayerId) {
+  if (!proposerTeamId || !receiverTeamId) return { error: 'Select both teams' };
+  if (proposerTeamId === receiverTeamId) return { error: 'Cannot trade with your own team' };
+  if (!offeredPlayerId || !requestedPlayerId) return { error: 'Select both players' };
+
+  if (!playerOwnedByTeam(offeredPlayerId, proposerTeamId)) {
+    return { error: 'You do not own the offered player' };
+  }
+  if (!playerOwnedByTeam(requestedPlayerId, receiverTeamId)) {
+    return { error: 'Opponent does not own the requested player' };
+  }
+
+  const pending = (state.trades || []).some(
+    (t) =>
+      t.status === 'pending' &&
+      (t.offeredPlayerId === offeredPlayerId ||
+        t.requestedPlayerId === offeredPlayerId ||
+        t.offeredPlayerId === requestedPlayerId ||
+        t.requestedPlayerId === requestedPlayerId)
+  );
+  if (pending) return { error: 'One of these players is already in a pending trade' };
+
+  const trade = await db.insertTrade(
+    {
+      proposerTeamId,
+      receiverTeamId,
+      offeredPlayerId,
+      requestedPlayerId
+    },
+    state.roomId
+  );
+
+  if (!db.isEnabled()) {
+    state.trades = state.trades || [];
+    state.trades.unshift(trade);
+  } else {
+    await loadTradesIntoState();
+  }
+
+  return { ok: true, trade: enrichTrade(trade) };
+}
+
+async function acceptTrade(tradeId, resolvedBy = 'admin') {
+  const trade = (state.trades || []).find((t) => t.id === tradeId);
+  if (!trade) return { error: 'Trade not found' };
+  if (trade.status !== 'pending') return { error: 'Trade is not pending' };
+
+  const swap = executeTradeSwap(
+    trade.offeredPlayerId,
+    trade.requestedPlayerId,
+    trade.proposerTeamId,
+    trade.receiverTeamId
+  );
+  if (swap.error) return swap;
+
+  if (db.isEnabled()) {
+    await db.updateTradeStatus(tradeId, 'accepted', resolvedBy, state.roomId);
+    await loadTradesIntoState();
+  } else {
+    trade.status = 'accepted';
+    trade.resolvedAt = new Date().toISOString();
+    trade.resolvedBy = resolvedBy;
+  }
+
+  return { ok: true };
+}
+
+async function rejectTrade(tradeId, resolvedBy = 'admin') {
+  const trade = (state.trades || []).find((t) => t.id === tradeId);
+  if (!trade) return { error: 'Trade not found' };
+  if (trade.status !== 'pending') return { error: 'Trade is not pending' };
+
+  if (db.isEnabled()) {
+    await db.updateTradeStatus(tradeId, 'rejected', resolvedBy, state.roomId);
+    await loadTradesIntoState();
+  } else {
+    trade.status = 'rejected';
+    trade.resolvedAt = new Date().toISOString();
+    trade.resolvedBy = resolvedBy;
+  }
+
+  return { ok: true };
+}
+
+async function getTeamRtm(teamId) {
+  const list = await rtm.getTeamRtmList(teamId, state.players);
+  const takenPlayerIds = rtm
+    .getEntries()
+    .filter((e) => e.teamId !== teamId)
+    .map((e) => e.playerId);
+  return { ok: true, list, takenPlayerIds };
+}
+
+async function getAdminRtm() {
+  return { ok: true, teams: await rtm.getAdminRtmOverview(state.players) };
+}
+
+async function addRtmPlayer(teamId, playerId) {
+  return rtm.addPlayer(state.roomId, teamId, playerId, state.players);
+}
+
+async function removeRtmPlayer(teamId, playerId) {
+  return rtm.removePlayer(state.roomId, teamId, playerId, state.players);
+}
+
+async function submitRtmList(teamId) {
+  return rtm.submitTeamList(state.roomId, teamId, state.players);
+}
+
+async function getApprovedRtm() {
+  return { ok: true, teams: await rtm.getApprovedRtmOverview(state.players) };
+}
+
+async function acceptRtmList(teamId) {
+  const result = await rtm.acceptTeamList(state.roomId, teamId, state.players);
+  if (result.error) return result;
+  return { ok: true, teams: await rtm.getAdminRtmOverview(state.players) };
+}
+
+async function rejectRtmList(teamId) {
+  const result = await rtm.rejectTeamList(state.roomId, teamId, state.players);
+  if (result.error) return result;
+  return { ok: true, teams: await rtm.getAdminRtmOverview(state.players) };
 }
 
 module.exports = {
@@ -544,6 +791,20 @@ module.exports = {
   getState,
   getPublicState,
   broadcast,
+  broadcastAll,
+  broadcastTrades,
+  joinTradeRoom,
+  proposeTrade,
+  acceptTrade,
+  rejectTrade,
+  getTeamRtm,
+  getAdminRtm,
+  addRtmPlayer,
+  removeRtmPlayer,
+  submitRtmList,
+  acceptRtmList,
+  rejectRtmList,
+  getApprovedRtm,
   startAuction,
   updateBid,
   markSold,

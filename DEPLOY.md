@@ -61,14 +61,19 @@ Optional auctioneer link: `https://your-app.onrender.com?tab=auctioneer`
 - Ensure `data/players.json` is committed in the repo
 - With Postgres, **sold players and bids survive** server sleep and redeploys (13 → 14 June)
 
-## Persistence (Postgres)
+## Persistence (Neon Postgres)
 
-Auction progress is saved automatically after each action to a single `auction_state` row (`JSONB`).
+1. Create a free project at [neon.tech](https://neon.tech)
+2. Copy the **connection string** (with `?sslmode=require`)
+3. Set `DATABASE_URL` on Render (or Oracle VM)
+4. Optional: run `scripts/neon-schema.sql` in Neon SQL Editor (the app also auto-creates tables on boot)
 
-- **Without `DATABASE_URL`:** in-memory only (local dev default)
-- **With `DATABASE_URL`:** survives overnight and cold starts
+Also set:
 
-Local Postgres (optional): copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm start`.
+- `ROOM_CODE` — code teams enter in **Trade Window** (default `IPL2026`)
+- `TRADE_ADMIN_PASSWORD` — EB's password to accept/reject trades
+
+Auction progress and **trade requests** persist across restarts.
 
 ## Troubleshooting
 

@@ -600,6 +600,36 @@
     "id": "p-40"
   },
   {
+    "name": "Ben Stokes",
+    "country": "England",
+    "role": "ALL-ROUNDER",
+    "set": "Marquee",
+    "setNumber": 0,
+    "category": "Marquee",
+    "capped": true,
+    "retained": false,
+    "basePrice": 2,
+    "soldStatus": "pending",
+    "soldTeam": null,
+    "finalPrice": null,
+    "id": "p-616"
+  },
+  {
+    "name": "Jofra Archer",
+    "country": "England",
+    "role": "BOWLER",
+    "set": "Marquee",
+    "setNumber": 0,
+    "category": "Marquee",
+    "capped": true,
+    "retained": false,
+    "basePrice": 2,
+    "soldStatus": "pending",
+    "soldTeam": null,
+    "finalPrice": null,
+    "id": "p-617"
+  },
+  {
     "name": "Shreyas Iyer",
     "country": "India",
     "role": "BATTER",
@@ -1785,8 +1815,8 @@
     "id": "p-119"
   },
   {
-    "name": "Shai Hope W est Indies",
-    "country": "India",
+    "name": "Shai Hope",
+    "country": "West Indies",
     "role": "WICKETKEEPER",
     "set": "WK2",
     "setNumber": 2,
@@ -1815,8 +1845,8 @@
     "id": "p-121"
   },
   {
-    "name": "Rovman Powell W est Indies",
-    "country": "India",
+    "name": "Rovman Powell",
+    "country": "West Indies",
     "role": "BATTER",
     "set": "BA2",
     "setNumber": 3,
@@ -2520,8 +2550,8 @@
     "id": "p-168"
   },
   {
-    "name": "Sherfane Rutherford W est Indies",
-    "country": "India",
+    "name": "Sherfane Rutherford",
+    "country": "West Indies",
     "role": "BATTER",
     "set": "BA3",
     "setNumber": 4,
@@ -2850,8 +2880,8 @@
     "id": "p-190"
   },
   {
-    "name": "Romario Shepherd W est Indies",
-    "country": "India",
+    "name": "Romario Shepherd",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL3",
     "setNumber": 4,
@@ -3195,8 +3225,8 @@
     "id": "p-213"
   },
   {
-    "name": "Akeal Hosein W est Indies",
-    "country": "India",
+    "name": "Akeal Hosein",
+    "country": "West Indies",
     "role": "BOWLER",
     "set": "SP2",
     "setNumber": 5,
@@ -3510,8 +3540,8 @@
     "id": "p-234"
   },
   {
-    "name": "Johnson Charles W est Indies",
-    "country": "India",
+    "name": "Johnson Charles",
+    "country": "West Indies",
     "role": "WICKETKEEPER",
     "set": "WK4",
     "setNumber": 5,
@@ -3540,8 +3570,8 @@
     "id": "p-236"
   },
   {
-    "name": "Andre Fletcher W est Indies",
-    "country": "India",
+    "name": "Andre Fletcher",
+    "country": "West Indies",
     "role": "WICKETKEEPER",
     "set": "WK4",
     "setNumber": 5,
@@ -3630,8 +3660,8 @@
     "id": "p-242"
   },
   {
-    "name": "Brandon King W est Indies",
-    "country": "India",
+    "name": "Brandon King",
+    "country": "West Indies",
     "role": "BATTER",
     "set": "BA4",
     "setNumber": 6,
@@ -3645,8 +3675,8 @@
     "id": "p-243"
   },
   {
-    "name": "Evin Lewis W est Indies",
-    "country": "India",
+    "name": "Evin Lewis",
+    "country": "West Indies",
     "role": "BATTER",
     "set": "BA4",
     "setNumber": 6,
@@ -4290,8 +4320,8 @@
     "id": "p-286"
   },
   {
-    "name": "Mikyle Louis W est Indies",
-    "country": "India",
+    "name": "Mikyle Louis",
+    "country": "West Indies",
     "role": "BATTER",
     "set": "BA5",
     "setNumber": 7,
@@ -4635,8 +4665,8 @@
     "id": "p-309"
   },
   {
-    "name": "Kyle Mayers W est Indies",
-    "country": "India",
+    "name": "Kyle Mayers",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL5",
     "setNumber": 7,
@@ -5610,8 +5640,8 @@
     "id": "p-374"
   },
   {
-    "name": "Gudakesh Motie W est Indies",
-    "country": "India",
+    "name": "Gudakesh Motie",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL6",
     "setNumber": 9,
@@ -5910,8 +5940,8 @@
     "id": "p-394"
   },
   {
-    "name": "Alzarri Joseph W est Indies",
-    "country": "India",
+    "name": "Alzarri Joseph",
+    "country": "West Indies",
     "role": "BOWLER",
     "set": "FA4",
     "setNumber": 10,
@@ -6120,8 +6150,8 @@
     "id": "p-408"
   },
   {
-    "name": "Jason Holder W est Indies",
-    "country": "India",
+    "name": "Jason Holder",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL7",
     "setNumber": 10,
@@ -6615,8 +6645,8 @@
     "id": "p-441"
   },
   {
-    "name": "Shamar Joseph W est Indies",
-    "country": "India",
+    "name": "Shamar Joseph",
+    "country": "West Indies",
     "role": "BOWLER",
     "set": "FA5",
     "setNumber": 12,
@@ -7065,8 +7095,8 @@
     "id": "p-471"
   },
   {
-    "name": "Roston Chase W est Indies",
-    "country": "India",
+    "name": "Roston Chase",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL9",
     "setNumber": 13,
@@ -7575,8 +7605,8 @@
     "id": "p-505"
   },
   {
-    "name": "Alick Athanaze W est Indies",
-    "country": "India",
+    "name": "Alick Athanaze",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL10",
     "setNumber": 15,
@@ -7605,8 +7635,8 @@
     "id": "p-507"
   },
   {
-    "name": "Dominic Drakes W est Indies",
-    "country": "India",
+    "name": "Dominic Drakes",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL10",
     "setNumber": 15,
@@ -7620,8 +7650,8 @@
     "id": "p-508"
   },
   {
-    "name": "Matthew Forde W est Indies",
-    "country": "India",
+    "name": "Matthew Forde",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL10",
     "setNumber": 15,
@@ -7665,8 +7695,8 @@
     "id": "p-511"
   },
   {
-    "name": "Keemo Paul W est Indies",
-    "country": "India",
+    "name": "Keemo Paul",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL10",
     "setNumber": 15,
@@ -7680,8 +7710,8 @@
     "id": "p-512"
   },
   {
-    "name": "Odean Smith W est Indies",
-    "country": "India",
+    "name": "Odean Smith",
+    "country": "West Indies",
     "role": "ALL-ROUNDER",
     "set": "AL10",
     "setNumber": 15,
@@ -7755,8 +7785,8 @@
     "id": "p-517"
   },
   {
-    "name": "Obed McCoy W est Indies",
-    "country": "India",
+    "name": "Obed McCoy",
+    "country": "West Indies",
     "role": "BOWLER",
     "set": "FA7",
     "setNumber": 16,
